@@ -1,0 +1,4 @@
+#f6c558 Light yellow
+#132843 Dark blue
+#ba9f57 Light dim yellow
+#2596be Mid gray
