@@ -3,81 +3,151 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snap Savior</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <header class="header">
-    <img src="icons/icon-32.png" alt="Snap Savior" class="header__icon" width="32" height="32">
-    <h1 class="header__title">Snap Savior</h1>
-    <p class="header__subtitle">Auto-fill forms, you submit after CAPTCHA</p>
-  </header>
+  <div class="app">
+    <header class="header">
+      <div class="header__content">
+        <div class="header__icon-wrapper">
+          <img src="icons/icon-32.png" alt="Snap Savior" class="header__icon" width="32" height="32">
+        </div>
+        <div class="header__text">
+          <h1 class="header__title">Snap Savior</h1>
+          <p class="header__subtitle">Automated streak restoration</p>
+        </div>
+      </div>
+    </header>
 
-  <main class="main">
-    <section class="card" id="my-details-section">
-      <h2 class="card__title">My details</h2>
-      <p class="card__desc">Saved once, used for every form.</p>
+    <main class="main">
+      <!-- Profile Section -->
+      <section class="section">
+        <div class="section__header">
+          <h2 class="section__title">
+            <span class="section__icon">👤</span>
+            Your Profile
+          </h2>
+          <p class="section__description">Save your details once, use them for all requests</p>
+        </div>
 
-      <div class="details-view" id="details-view" hidden>
-        <dl class="details-list">
-          <div class="details-list__row">
-            <dt>Username</dt>
-            <dd id="display-username"></dd>
+        <div class="section__content">
+          <!-- View Mode -->
+          <div class="profile-view" id="details-view" style="display: none;">
+            <div class="profile-info">
+              <div class="info-item">
+                <span class="info-item__label">Username</span>
+                <span class="info-item__value" id="display-username">—</span>
+              </div>
+              <div class="info-item">
+                <span class="info-item__label">Email</span>
+                <span class="info-item__value" id="display-email">—</span>
+              </div>
+              <div class="info-item">
+                <span class="info-item__label">Mobile</span>
+                <span class="info-item__value" id="display-mobile">—</span>
+              </div>
+            </div>
+            <button type="button" id="btn-update" class="btn btn--outline">
+              <span class="btn__icon">✏️</span>
+              Edit Details
+            </button>
           </div>
-          <div class="details-list__row">
-            <dt>Email</dt>
-            <dd id="display-email"></dd>
-          </div>
-          <div class="details-list__row">
-            <dt>Mobile</dt>
-            <dd id="display-mobile"></dd>
-          </div>
-        </dl>
-        <div class="card__actions">
-          <button type="button" id="btn-update" class="btn btn--secondary">Update</button>
-        </div>
-      </div>
 
-      <div class="details-edit" id="details-edit" hidden>
-        <div class="field">
-          <label for="input-username">Username</label>
-          <input type="text" id="input-username" placeholder="your_username" autocomplete="username">
+          <!-- Edit Mode -->
+          <div class="profile-edit" id="details-edit" style="display: block;">
+            <div class="form-group">
+              <label for="input-username" class="form-label">Username</label>
+              <input 
+                type="text" 
+                id="input-username" 
+                class="form-input" 
+                placeholder="your_username" 
+                autocomplete="username"
+              >
+            </div>
+            <div class="form-group">
+              <label for="input-email" class="form-label">Email Address</label>
+              <input 
+                type="email" 
+                id="input-email" 
+                class="form-input" 
+                placeholder="you@example.com" 
+                autocomplete="email"
+              >
+            </div>
+            <div class="form-group">
+              <label for="input-mobile" class="form-label">Mobile Number</label>
+              <input 
+                type="text" 
+                id="input-mobile" 
+                class="form-input" 
+                placeholder="+1 234 567 8900" 
+                autocomplete="tel"
+              >
+            </div>
+            <div class="form-actions">
+              <button type="button" id="btn-save" class="btn btn--primary">
+                <span class="btn__icon">💾</span>
+                Save Details
+              </button>
+              <div id="save-feedback" class="feedback" aria-live="polite"></div>
+            </div>
+          </div>
         </div>
-        <div class="field">
-          <label for="input-email">Email</label>
-          <input type="email" id="input-email" placeholder="you@example.com" autocomplete="email">
-        </div>
-        <div class="field">
-          <label for="input-mobile">Mobile Number</label>
-          <input type="text" id="input-mobile" placeholder="+1 234 567 8900" autocomplete="tel">
-        </div>
-        <div class="card__actions">
-          <button type="button" id="btn-save" class="btn btn--primary">Save</button>
-          <span id="save-feedback" class="feedback" aria-live="polite"></span>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="card" id="bulk-section">
-      <h2 class="card__title">Restore bulk streaks</h2>
-      <p class="card__desc">One tab per friend; we fill, you submit.</p>
-      <div class="field">
-        <label for="input-usernames">Friend usernames</label>
-        <textarea id="input-usernames" rows="4" placeholder="friend_one&#10;friend_two&#10;friend_three"></textarea>
-      </div>
-      <p class="hint">One username per line. Tabs open one by one; solve CAPTCHA and submit each.</p>
-      <div id="progress-container" class="progress-container" hidden>
-        <div class="progress-bar">
-          <div id="progress-fill" class="progress-fill"></div>
+      <!-- Bulk Operation Section -->
+      <section class="section">
+        <div class="section__header">
+          <h2 class="section__title">
+            <span class="section__icon">⚡</span>
+            Bulk Restore
+          </h2>
+          <p class="section__description">Process multiple streak restorations automatically</p>
         </div>
-        <p id="progress-text" class="progress-text"></p>
-      </div>
-      <div class="card__actions">
-        <button type="button" id="btn-confirm" class="btn btn--primary">Open tabs & fill</button>
-        <button type="button" id="btn-cancel" class="btn btn--secondary" hidden>Cancel</button>
-        <span id="confirm-feedback" class="feedback" aria-live="polite"></span>
-      </div>
-    </section>
-  </main>
+
+        <div class="section__content">
+          <div class="form-group">
+            <label for="input-usernames" class="form-label">Friend Usernames</label>
+            <textarea 
+              id="input-usernames" 
+              class="form-textarea" 
+              rows="5" 
+              placeholder="Enter one username per line&#10;&#10;Example:&#10;friend_one&#10;friend_two&#10;friend_three"
+            ></textarea>
+            <p class="form-hint">
+              <span class="form-hint__icon">💡</span>
+              One username per line. Duplicates are automatically removed.
+            </p>
+          </div>
+
+          <!-- Progress Indicator -->
+          <div id="progress-container" class="progress" hidden>
+            <div class="progress__header">
+              <span class="progress__label">Processing</span>
+              <span id="progress-text" class="progress__value">0 / 0</span>
+            </div>
+            <div class="progress__bar">
+              <div id="progress-fill" class="progress__fill"></div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" id="btn-confirm" class="btn btn--primary btn--full">
+              <span class="btn__icon">🚀</span>
+              Start Processing
+            </button>
+            <button type="button" id="btn-cancel" class="btn btn--danger btn--full" hidden>
+              <span class="btn__icon">⏹️</span>
+              Cancel Operation
+            </button>
+            <div id="confirm-feedback" class="feedback" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
   <script src="popup.js"></script>
 </body>
 </html>

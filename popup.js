@@ -49,12 +49,13 @@ function validateUsername(username) {
 
 function showDetailsView(stored) {
   if (stored) {
-    displayUsername.textContent = stored.username || "";
-    displayEmail.textContent = stored.email || "";
-    displayMobile.textContent = stored.mobile || "";
+    displayUsername.textContent = stored.username || "—";
+    displayEmail.textContent = stored.email || "—";
+    displayMobile.textContent = stored.mobile || "—";
   }
-  detailsView.hidden = false;
-  detailsEdit.hidden = true;
+  // Show view mode, hide edit form
+  detailsView.style.display = "flex";
+  detailsEdit.style.display = "none";
   saveFeedback.textContent = "";
 }
 
@@ -62,8 +63,9 @@ function showDetailsEdit(stored) {
   inputUsername.value = stored?.username || "";
   inputEmail.value = stored?.email || "";
   inputMobile.value = stored?.mobile || "";
-  detailsView.hidden = true;
-  detailsEdit.hidden = false;
+  // Show edit form, hide view mode
+  detailsView.style.display = "none";
+  detailsEdit.style.display = "flex";
   saveFeedback.textContent = "";
 }
 
@@ -137,10 +139,11 @@ btnSave.addEventListener("click", () => {
   }
   
   browser.storage.local.set({ username, email: rawEmail.trim(), mobile: rawMobile.trim() }).then(() => {
-    showSaveFeedback("Saved.", false, true);
+    showSaveFeedback("Details saved successfully!", false, true);
+    // Always switch to view mode after saving
     showDetailsView({ username, email: rawEmail.trim(), mobile: rawMobile.trim() });
   }).catch(() => {
-    showSaveFeedback("Failed to save.", true);
+    showSaveFeedback("Failed to save. Please try again.", true);
   });
 });
 
@@ -162,13 +165,26 @@ function hideProgress() {
 }
 
 function setBulkOperationState(isActive) {
-  btnConfirm.hidden = isActive;
-  btnCancel.hidden = !isActive;
-  inputUsernames.disabled = isActive;
-  // Hide the textarea field container when processing
-  const fieldContainer = inputUsernames.closest(".field");
-  if (fieldContainer) {
-    fieldContainer.hidden = isActive;
+  // Only show cancel button when operation is actually active
+  if (isActive) {
+    btnConfirm.hidden = true;
+    btnCancel.hidden = false;
+    inputUsernames.disabled = true;
+    // Hide the textarea field container when processing
+    const fieldContainer = inputUsernames.closest(".field");
+    if (fieldContainer) {
+      fieldContainer.hidden = true;
+    }
+  } else {
+    // Operation not active - show confirm button, hide cancel
+    btnConfirm.hidden = false;
+    btnCancel.hidden = true;
+    inputUsernames.disabled = false;
+    // Show the textarea field container
+    const fieldContainer = inputUsernames.closest(".field");
+    if (fieldContainer) {
+      fieldContainer.hidden = false;
+    }
   }
 }
 
@@ -235,11 +251,14 @@ function restoreOperationState() {
 browser.runtime.onMessage.addListener((msg) => {
   if (msg.type === "operationStateRestored" && msg.state) {
     const state = msg.state;
-    if (state.processing) {
-      // Restore UI state
+    if (state.processing && state.total > 0) {
+      // Only restore if operation is actually in progress
       setBulkOperationState(true);
       showProgress(state.total - state.remaining, state.total);
       showConfirmFeedback(`Resumed: ${state.total - state.remaining} of ${state.total} tabs processed.`, false, false);
+    } else {
+      // Ensure cancel button is hidden if no active operation
+      setBulkOperationState(false);
     }
   }
   // ... existing message handlers
@@ -266,7 +285,8 @@ browser.runtime.onMessage.addListener((msg) => {
     if (msg.failed > 0) {
       showConfirmFeedback(`Completed with errors: ${msg.success} succeeded, ${msg.failed} failed.`, true);
     } else {
-      showConfirmFeedback(`Success! ${msg.success} tab(s) opened.`, false, true);
+      const tabText = msg.success === 1 ? "tab" : "tabs";
+      showConfirmFeedback(`✅ Successfully processed ${msg.success} ${tabText}!`, false, true);
     }
   }
   if (msg.type === "bulkOperationCancelled") {
@@ -285,10 +305,14 @@ browser.runtime.onMessage.addListener((msg) => {
 browser.storage.local.get(STORAGE_KEYS).then((stored) => {
   const hasAll = [stored.username, stored.email, stored.mobile].every((v) => (v || "").trim());
   if (hasAll) {
+    // Details exist - show view mode only (with edit button)
     showDetailsView(stored);
   } else {
+    // No details - show edit form (with save button)
     showDetailsEdit(stored);
   }
+  // Ensure cancel button is hidden on initial load
+  setBulkOperationState(false);
   // Restore operation state after UI is initialized
   restoreOperationState();
 });
