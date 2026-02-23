@@ -17,7 +17,7 @@
 
 1. Clone or download this repository.
 2. In Firefox, go to `about:debugging` → **This Firefox** → **Load Temporary Add-on…**.
-3. Select `manifest.json` inside the `firefox-extension` folder.
+3. Select `manifest.json` from the repository root.
 
 The temporary add-on stays until you restart Firefox. Reload it from the same page after code changes.
 
@@ -26,11 +26,18 @@ The temporary add-on stays until you restart Firefox. Reload it from the same pa
 ## How to use
 
 1. **Save your details**  
-   Click the Snap Savior icon → **My details**. Enter your Snapchat **Username**, **Email**, and **Mobile Number**, then click **Save**. These are stored only on your device.
+   Click the Snap Savior icon → **My details**. Enter your Snapchat **Username**, **Email**, and **Mobile Number**, then click **Save**.  
+   - Email and mobile numbers are validated before saving
+   - Usernames are automatically sanitized (invalid characters removed)
+   - These are stored only on your device.
 
 2. **Restore bulk streaks**  
    In **Restore bulk streaks**, enter one friend’s Snapchat username per line. Click **Open tabs & fill**.  
-   The extension opens one tab per friend, goes to the official Snapchat streak restore form, and fills your details plus that friend’s username. It does **not** submit the form (because of CAPTCHA).
+   - Duplicate usernames are automatically filtered
+   - Progress indicator shows "Opening X of Y tabs..."
+   - You can cancel the operation at any time using the **Cancel** button
+   - The extension opens one tab per friend, goes to the official Snapchat streak restore form, and fills your details plus that friend’s username
+   - It does **not** submit the form (because of CAPTCHA)
 
 3. **Submit each request**  
    In each tab, solve the CAPTCHA and click **Submit** when you’re ready.
@@ -63,7 +70,6 @@ To produce the same package as published on AMO:
 **Requirements:** A shell (Linux, macOS, or Windows with WSL / Git Bash) and `zip`.
 
 ```bash
-cd firefox-extension
 chmod +x build.sh
 ./build.sh
 ```
@@ -72,6 +78,15 @@ This creates `snap-savior.zip` with the add-on files only (no transpilation or m
 
 ---
 
+## Features
+
+- ✅ **Input validation** - Email, mobile number, and username validation
+- ✅ **Duplicate filtering** - Automatically removes duplicate usernames
+- ✅ **Progress indicator** - Real-time progress bar showing tab opening status
+- ✅ **Cancellation** - Cancel bulk operations at any time
+- ✅ **Error handling** - Graceful handling of tab creation failures and closed tabs
+- ✅ **Security** - Content Security Policy and input sanitization
+
 ## License
 
-MIT License. See [LICENSE](../LICENSE) in the repository root.
+MIT License.

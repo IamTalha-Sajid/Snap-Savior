@@ -7,9 +7,9 @@
 </head>
 <body>
   <header class="header">
-    <img src="icons/snap-savior.png" alt="" class="header__icon" width="32" height="32">
+    <img src="icons/icon-32.png" alt="Snap Savior" class="header__icon" width="32" height="32">
     <h1 class="header__title">Snap Savior</h1>
-    <p class="header__subtitle">Fill forms in bulk, submit after CAPTCHA</p>
+    <p class="header__subtitle">Auto-fill forms, you submit after CAPTCHA</p>
   </header>
 
   <main class="main">
@@ -65,8 +65,15 @@
         <textarea id="input-usernames" rows="4" placeholder="friend_one&#10;friend_two&#10;friend_three"></textarea>
       </div>
       <p class="hint">One username per line. Tabs open one by one; solve CAPTCHA and submit each.</p>
+      <div id="progress-container" class="progress-container" hidden>
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <p id="progress-text" class="progress-text"></p>
+      </div>
       <div class="card__actions">
         <button type="button" id="btn-confirm" class="btn btn--primary">Open tabs & fill</button>
+        <button type="button" id="btn-cancel" class="btn btn--secondary" hidden>Cancel</button>
         <span id="confirm-feedback" class="feedback" aria-live="polite"></span>
       </div>
     </section>
