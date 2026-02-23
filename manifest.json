@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Snap Savior",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Fill Snapchat streak restore forms in bulk. Save your details once, then open one tab per friend and auto-fill (you submit after CAPTCHA).",
   "content_security_policy": "script-src 'self'; object-src 'self'",
   "permissions": [
@@ -43,7 +43,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "snap-savior@snapsavior",
-      "strict_min_version": "109.0",
+      "strict_min_version": "142.0",
       "data_collection_permissions": {
         "required": ["none"]
       }
